@@ -47,16 +47,20 @@ public class FileReader {
 	
 		        String line;
 		        StringBuilder builder = new StringBuilder();
+		        int i = 0;
 	
 		        while ((line = in.readLine()) != null) {
+		        	
+		        	++i;
 		        	if (mCallback != null) {
 		        		mCallback.execute(line);
 		        	}
 		            
-//		            builder.append(line);
-//		            builder.append("\n");
+		            builder.append(line);
+		            builder.append("\n");
 		        }
-		        mCallback.completedReadFile();
+		        if (mCallback != null)
+		        	mCallback.completedReadFile();
 		        in.close();
 		        mContent = builder.toString();
 	       	} catch (UnsupportedEncodingException e) {

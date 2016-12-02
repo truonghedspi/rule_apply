@@ -10,8 +10,8 @@ import reader.FileReader;
 import writer.FileWriter;
 
 public class RuleApply implements FileReader.Listener{
-	private final static String outputFileName = "/home/truong/Gr/corpus/ja.plf";
-	private final static String intputFileName = "/home/truong/Gr/corpus/train.clean.tag.ja";
+	private final static String outputFileName = "/home/truong/Gr/corpus/test.plf";
+	private final static String intputFileName = "/home/truong/Gr/corpus/test.tagged.ja";
 	
 	// contain all rule 
 	private RuleContainer mContainer;
@@ -22,7 +22,7 @@ public class RuleApply implements FileReader.Listener{
 	
 	private int mNumberOfLine = 0;
 	
-	private volatile int mNumberOFCompletedThread = 0;
+	private  int mNumberOFCompletedThread = 0;
 	
 	private boolean compable = false;
 	
@@ -32,15 +32,19 @@ public class RuleApply implements FileReader.Listener{
 	
 	private synchronized void completeApplyRuleForSentence() {
 		++mNumberOFCompletedThread;
-		
-		if (mNumberOFCompletedThread == 78459) {
+		System.out.println(mNumberOFCompletedThread);
+		if (mNumberOFCompletedThread == 415) {
 			writeResultToFile();
 		}
+		
 	}
 	
-	private void writeResultToFile() {
+
+	
+	public void writeResultToFile() {
 		StringBuilder builder = new StringBuilder(); 
 		for (Graph graph: graphs) {
+			//System.out.println(graph.toPlf());
 			builder.append(graph.toPlf());
 			builder.append("\n");
 		}
@@ -72,9 +76,9 @@ public class RuleApply implements FileReader.Listener{
 	 * @param g graph that apply rule on this
 	 */
 	private void applyRule(final Graph g) {
-		Thread thread = new Thread() {
-			@Override
-			public void run() {
+//		Thread thread = new Thread() {
+//			@Override
+//			public void run() {
 				for (Rule rule: RuleApply.this.mContainer.getRuleList()) {
 					g.applyRule(rule);
 				}
@@ -82,10 +86,10 @@ public class RuleApply implements FileReader.Listener{
 				g.postProcess();
 				
 				completeApplyRuleForSentence();
-			}
-		};
+//			}
+//		};
 		
-		thread.start();
+	//	thread.start();
 	}
 	
 	//listener for each time read a line from corpus
@@ -97,7 +101,6 @@ public class RuleApply implements FileReader.Listener{
 	
 	public void completedReadFile() {
 		compable = true;
-		System.out.println("CC");
 	} 
 	
 	

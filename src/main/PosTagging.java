@@ -4,8 +4,8 @@ import reader.FileReader;
 import writer.FileWriter;
 
 public class PosTagging {
-	static String inputFile = "/home/truong/Gr/corpus/train.clean.tagged.ja";
-	static String outputFile = "/home/truong/Gr/corpus/train.clean.tag.ja";
+	static String inputFile = "/home/truong/Gr/corpus/test.mecab.ja";
+	static String outputFile = "/home/truong/Gr/corpus/test.tagged.ja";
 	
 	public static void main(String[] args) {
 		FileReader reader = new FileReader();
@@ -19,16 +19,18 @@ public class PosTagging {
 		
 		String[] fileContentArr = fileContent.split("\n");
 		String[] lineArr;
+		String[] tag;
 		for (String line: fileContentArr) {
 			if (line.equals("EOS")) {
 				builder.append("\n");
 				continue;
 			}
 			
-			lineArr = line.split("[\t ,]");
+			lineArr = line.split("[\t ]");
+			tag = lineArr[1].split(",");
 			builder.append(lineArr[0]);
 			builder.append("/");
-			builder.append(lineArr[1]);
+			builder.append(tag[0]);
 			builder.append(" ");
 		}
 		

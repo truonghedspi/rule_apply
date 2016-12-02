@@ -293,12 +293,13 @@ public class Graph{
 		if (v.getOutEdges().size() == 0) continue;
 		
 		int numberOfEdge = v.getOutEdges().size();
-		float weight = (float)Math.round(100.0/numberOfEdge)/100;
+		float weight = Math.round(100.0/numberOfEdge);
 		for (Edge edge: v.getOutEdges()) {
-			edge.setWeight(weight);
+			edge.setWeight(weight/100f);
 		}
-		
-		v.getOutEdges().get(0).setWeight(1-weight*(numberOfEdge-1));
+		System.out.println(weight*(numberOfEdge-1));
+		System.out.println(1-weight*(numberOfEdge-1));
+		v.getOutEdges().get(0).setWeight((100-weight*(numberOfEdge-1))/100f);
 	 }
  }
  
