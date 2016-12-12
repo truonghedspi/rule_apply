@@ -14,16 +14,16 @@ import rule.RuleContainer;
 import writer.FileWriter;
 
 public class RuleFilter {
-	public static final int MAX_WORDS = 7;
-	public static final int MIN_COUNT = 4000;
+	public static final int MAX_WORDS = 8;
+	public static final int MIN_COUNT = 1000;
 	
 	public static final int LOW = 2;
 	public static final int UP = 15;
 	
 	public static void main(String[] args) {
 		RuleContainer container = readFile("/home/truong/res.txt");
-		statistic(container);
-//		FileWriter.write(container.toString(), "/home/truong/res_filter.txt");
+		//statistic(container);
+		FileWriter.write(container.toString(), "/home/truong/res_filter.txt");
 //		System.out.println(container.getRuleList().size());
 		
 		//statisticRuleByLengthAndCount(container);
@@ -120,16 +120,16 @@ public class RuleFilter {
 			    posArr = sentenceArr[0].split(" ");
 			    
 			    //filter
-//			    if (posArr.length > MAX_WORDS) {
-//			    	continue;
-//			    }
+			    if (posArr.length > MAX_WORDS) {
+			    	continue;
+			    }
 			    
-			    //System.out.println(Integer.parseInt(sentenceArr[2]));
+			    System.out.println(Integer.parseInt(sentenceArr[2]));
 			    
 			    //filter
-//			    if (Integer.parseInt(sentenceArr[2]) < MIN_COUNT) {
-//			    	continue;
-//			    }
+			    if (Integer.parseInt(sentenceArr[2]) < MIN_COUNT) {
+			    	continue;
+			    }
 			    container.addRule(
 			    		sentenceArr[0],
 			    		sentenceArr[1], 

@@ -3,6 +3,7 @@ package dgraph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -166,9 +167,22 @@ public class Graph{
  
   
   public void printGraph() {
-	  for (Vertex v: mVertexs) {
-		  System.out.println(v.toString());
+//	  for (Vertex v: mVertexs) {
+//		  System.out.println(v.toString());
+//	  }
+	  
+	  Queue<Vertex> queue = new ArrayDeque<Vertex>();
+	  queue.add(getRootVertex());
+	  while(queue.isEmpty()) {
+		  Vertex v = queue.remove();
+		  for (Edge edge: v.getOutEdges()) {
+			  System.out.print(edge.getWord() + " ");
+			  queue.add(edge.getToVertex());
+		  }
+		  System.out.println();
 	  }
+	 
+	  
   }
   
   /**
@@ -256,10 +270,28 @@ public class Graph{
 		 if (words.length != poss.length)
 			 throw new IllegalArgumentException("word array and pos array not same length!");
 		 Vertex tmp = lower;
+		 boolean flag = false;
 		 
 		 for (int i = 0; i < words.length-1; ++i) {
+			 
+			 for (Edge edge: tmp.getOutEdges()) {
+				 if (edge.getWord().equals(words[i])) {
+					 tmp = edge.getToVertex();
+					 flag = true;
+					 break;
+					 
+				 }
+			 }
+			 
+			 if (flag == true) {
+				 flag = false;
+				 continue;
+			 } 
+			 
 			 Vertex newVertex = new Vertex();
+			 
 			 addVertex(newVertex);
+			 
 			 Edge newEdge = new Edge(poss[i],words[i], false);
 			 addEdge(newEdge, tmp, newVertex);
 			 tmp = newVertex;
@@ -297,8 +329,7 @@ public class Graph{
 		for (Edge edge: v.getOutEdges()) {
 			edge.setWeight(weight/100f);
 		}
-		System.out.println(weight*(numberOfEdge-1));
-		System.out.println(1-weight*(numberOfEdge-1));
+		
 		v.getOutEdges().get(0).setWeight((100-weight*(numberOfEdge-1))/100f);
 	 }
  }
@@ -342,9 +373,18 @@ public class Graph{
 	 while (!queue.isEmpty()) {
 		 cur = queue.remove();
 		 builder.append(toPlfByVertex(cur));
+		 
+		 List<Vertex> adjacentVertexs = new ArrayList<Vertex>();
+		 
 		 for (Edge edge: cur.getOutEdges()) {
-			 if (queue.contains(edge.getToVertex()) == false)
-				 queue.add(edge.getToVertex());
+			 if (queue.contains(edge.getToVertex()) == false) {
+				 adjacentVertexs.add(edge.getToVertex());
+			 }
+				 
+		 }
+		 Collections.sort(adjacentVertexs);
+		 for (int i = 0; i < adjacentVertexs.size(); ++i) {
+			 queue.add(adjacentVertexs.get(i));
 		 }
 	 }
 	 builder.append(")");
@@ -370,6 +410,10 @@ public class Graph{
 	 builder.append("),");
 
 	 return builder.toString();
+ }
+ 
+ public int getLength() {
+	 return mVertexs.size();
  }
 
 }

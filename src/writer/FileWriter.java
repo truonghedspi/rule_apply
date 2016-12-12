@@ -33,4 +33,23 @@ public class FileWriter {
 		
 		
 	}
+	
+	public static void writeByLine(String content, String fileName) {
+		Writer writer;
+		
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+			          new FileOutputStream(fileName), "utf-8"));
+			
+			writer.write(content);
+			writer.close();
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

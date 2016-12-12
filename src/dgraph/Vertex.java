@@ -3,7 +3,7 @@ package dgraph;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Vertex {
+public class Vertex implements Comparable<Vertex>{
 	private int mId;
 	private List<Edge> mInEdges;
 	private List<Edge> mOutEdges;
@@ -88,6 +88,20 @@ public class Vertex {
 			builder.append(edge.toString());
 		}
 		return builder.toString();
+	}
+
+
+	public int compareTo(Vertex o) {
+		// TODO Auto-generated method stub
+		if (getId() > o.getId()) {
+			return 1;
+		} 
+		
+		if (getId() < o.getId()) {
+			return -1;
+		}
+		
+		return 0;
 	}
 	
 

@@ -29,11 +29,11 @@ public class GraphMain {
 			g.createMonoTone("Toi/N thich/V ban/N");
 			Rule rule = new Rule(pos,align);
 			Rule rule2 =  new Rule(pos1,align);
+			
 			g.applyRule(rule);
 			g.applyRule(rule2);
-			g.postProcess();
 			
-			System.out.println(g.toPlf());
+			System.out.println(g.getStringsBetweenTwoVertex(g.getRootVertex(), g.getEndVertex()));
 			
 	}
 	
