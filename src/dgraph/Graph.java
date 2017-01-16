@@ -229,6 +229,17 @@ public class Graph{
 		  
 		  //if word sequence not exsisted
 		  //then add it to graph
+		  
+		  List<String> allStrings = getStringsBetweenTwoVertex(lower, upper);
+		  StringBuilder temp = new StringBuilder();
+		  for (String element: newWord) {
+			  temp.append(element+" ");
+		  }
+		  //System.out.println("temp:"+temp);
+		  if (allStrings.contains(temp.toString())) {
+			  System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+			  continue;
+		  }
 		  if (!isWordSequenceExsisted(lower, upper, newWord)) {
 			  addNewArc(lower, upper, newWord,newPos);
 		  }

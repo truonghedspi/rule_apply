@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import dgraph.Graph;
 import rule.Rule;
@@ -14,10 +16,10 @@ import writer.FileWriter;
 
 public class RuleApply implements FileReader.Listener{
 	
-	public final static int MAX_WORDS = 15;
+	public final static int MAX_WORDS = 10;
 	
 	private final static String outputFileName = "/home/truong/Gr/corpus/test.plf";
-	private final static String intputFileName = "/home/truong/Gr/corpus/test.tagged.ja";
+	private final static String intputFileName = "/home/truong/Downloads/test.tagged.ja";
 	
 	// contain all rule 
 	private RuleContainer mContainer;
@@ -89,58 +91,56 @@ public class RuleApply implements FileReader.Listener{
 	 * @param g graph that apply rule on this
 	 */
 	private void applyRule(final Graph g) {
-//		Thread thread = new Thread() {
-//			@Override
-//			public void run() {
 				for (Rule rule: RuleApply.this.mContainer.getRuleList()) {
 					g.applyRule(rule);
 				}
-				
 				g.postProcess();
-				
-				//completeApplyRuleForSentence();
-//			}
-//		};
-		
-	//	thread.start();
 	}
 	
 	//listener for each time read a line from corpus
 	public void execute(String line) {
-		++mNumberOfLine;
 		applyRule(line);		
 	}
 	
 	
 	public void completedReadFile() {
-		//writeResultToFile();
-		StringBuilder res = new StringBuilder();
-		for (Graph g: getListGraph()) {
-			res.append(decode(g));
-			res.append("\n");
-		}
-		
-		FileWriter.write(res.toString(), outputFileName);
+		writeResultToFile();
+//		StringBuilder res = new StringBuilder();
+//		int i = 0;
+//		for (Graph g: getListGraph()) {
+//			++i;
+//			System.out.println("line:"+i);
+//			res.append(decode(g));
+//			res.append("\n");
+//		}
+//		
+//		FileWriter.write(res.toString(), outputFileName);
 
 	} 
 	
 	private String decode(Graph g) {
 		HashPair pair = null;
 		HashPair tmp = null;
-		for (String sentence: 
-			g.getStringsBetweenTwoVertex(g.getRootVertex(), g.getEndVertex())) {
-			try {
-				tmp = decode(sentence);
-				if (tmp.score > pair.score) {
-					pair.score = tmp.score;
-					pair.sentence = tmp.sentence;
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		
+		List<String> allSentences = 
+				g.getStringsBetweenTwoVertex(g.getRootVertex(), g.getEndVertex()); 
+//		Set<String> hs = new HashSet<String>();
+//		hs.addAll(allSentences);
+//		allSentences.clear();
+//		allSentences.addAll(hs);
+	
+		int i =0;
+		for (String sentence: allSentences) {
+			++i;
+			System.out.println("decode:"+i+"/"+allSentences.size());
+			tmp = decode(sentence);
+			if (pair == null) {
+				pair = tmp;
+				continue;
+			}
+			if (tmp.score > pair.score) {
+				pair.score = tmp.score;
+				pair.sentence = tmp.sentence;
 			}
 			
 		}
@@ -148,38 +148,49 @@ public class RuleApply implements FileReader.Listener{
 		return pair.sentence;
 	}
 	
-	private HashPair decode(String sentence) throws IOException, InterruptedException {
+	private HashPair decode(String sentence) {
 		String args[] = new String[3];
 		args[0] = "/bin/sh";
 		args[1] = "-c";
-		args[2] = "echo '" + sentence + "' | ~/mosesdecoder/bin/moses -f ~/nlp/reordering/ja-vi/working/binarised-model/moses.ini";
-		//String args[] = new String[] { "/bin/sh", "-c", "echo '私 の 趣味 は 読書 です' | ~/mosesdecoder/bin/moses -f ~/nlp/reordering/ja-vi/working/binarised-model/moses.ini" };
-		final Process p = Runtime.getRuntime().exec(args);
-		final HashPair hash = new HashPair();
-		new Thread(new Runnable() {
-			public void run() {
-			     BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-			     BufferedReader  in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			     String line = null; 
-			     int i = 0;
-			     
-			     try {
-			        while ((line = err.readLine()) != null) {
-			        	++i;
-			        	if (i == 38) {
-			        		String res[] = line.split("[\\[\\}=]");
-			        		hash.score = Float.parseFloat(res[4]);
-			        	}
-			        }
-			        
-			        hash.sentence = in.readLine();
-			     } catch (IOException e) {
-			            e.printStackTrace();
-			     }
-			    }
-			}).start();
-		p.waitFor();
-		return hash;
+		args[2] = "echo '" + sentence + "' | ~/mosesdecoder/bin/moses -f ~/nlp/test/working/train/model/moses.ini";
+		
+		Process p;
+		System.out.println("Cau can dich:"+sentence);
+		HashPair hash = new HashPair();
+		try {
+			p = Runtime.getRuntime().exec(args);
+			
+			 BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		     BufferedReader  in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		     String line = null;
+		     String temp, score;
+		     int i = 0;
+		     while ((line = err.readLine()) != null) {
+	        	++i;
+	        	System.out.println(line);
+	        	if (i == 38) {
+	        		String res[] = line.split("[\\[\\]=]");
+	        		int index = line.lastIndexOf("total=");
+	        		temp = line.substring(index+7, line.length()-1);
+	        		res = temp.split("]");
+	        		System.out.println("score"+res[0]);
+	        		hash.score = Float.parseFloat(res[0]);
+	        	}
+	        }
+	        
+	        hash.sentence = in.readLine();
+	        System.out.println(hash.sentence);
+			return hash;
+			 
+			//p.waitFor();
+		     
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return null;
+
 	}
 	
 	class HashPair {

@@ -53,14 +53,18 @@ public class FileReader {
 		        	
 		        	++i;
 		        	if (mCallback != null) {
+		        		System.out.println("Readline:"+line);
 		        		mCallback.execute(line);
 		        	}
 		            
 		            builder.append(line);
 		            builder.append("\n");
 		        }
-		        if (mCallback != null)
+		        if (mCallback != null) {
 		        	mCallback.completedReadFile();
+		        	System.out.println("Done");
+		        }
+		        	
 		        in.close();
 		        mContent = builder.toString();
 	       	} catch (UnsupportedEncodingException e) {
