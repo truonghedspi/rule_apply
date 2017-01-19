@@ -24,15 +24,18 @@ public class Graph{
 	private static final String TAG = "Graph";
 	
   /** Color used to mark unvisited nodes */
-  public static final String VISIT_COLOR_WHITE = "white";
+  public static final String VISITING = "visiting";
 
   /** Color used to mark nodes as they are first visited in DFS order */
-  public static final String VISIT_COLOR_GREY = "grey";
+  public static final String VISITED = "visited";
 
   /** Color used to mark nodes after descendants are completely visited */
-  public static final String VISIT_COLOR_BLACK = "black";
+  public static final String UNVISITED = "unvisited";
   
   public static final String TAG_WORD_DEVIDE_SYMBOL ="/";
+  
+  /**use for topology numbering node*/ 
+  private int count = 0;
   
    
   
@@ -52,6 +55,7 @@ public class Graph{
   
   private HashMap<Vertex, String> mColor;
   
+  private HashMap<Vertex, String> explored;
   
   public Graph() {
 	  mVertexs = new ArrayList<Vertex>();
@@ -75,6 +79,10 @@ public class Graph{
 	  
 	  mVertexs.add(v);
   } 
+  
+  public List<Vertex> getVertexs() {
+	  return mVertexs;
+  }
   
   /**
    * Append new edge to last of Vertex
@@ -326,6 +334,9 @@ public class Graph{
  }
  
  public void postProcess() {
+	 if (getVertexs().size() == 2) {
+		 return;
+	 }
 	 calculateEdgesWeight();
 	 numberingVertex();
  }
@@ -346,34 +357,63 @@ public class Graph{
  }
  
  private void numberingVertex() {
-	 	if (getRootVertex() == null) {
-	 		return;
-	 	}
-	 	HashMap<Vertex, Integer> deg = new HashMap<Vertex,Integer>();
-	 	for (Vertex v: mVertexs) {
-	 		deg.put(v, new Integer(v.getInEdges().size()));
-	 	}
-	 	int i =0;
-	 	
-		Queue<Vertex> queue = new ArrayDeque<Vertex>();
-		queue.add(getRootVertex());
-		
-		
-		Vertex v;
-		Vertex u; //adj vertex of v
-		while(!queue.isEmpty()) {
-			v = queue.remove();
-			v.setId(i);
-			for (Edge edge: v.getOutEdges()) {
-				u = edge.getToVertex();
-				deg.put(u, deg.get(u)-1);
-				if (deg.get(u) == 0) {
-					queue.add(u);
-				}
-			}
-			++i;
-		}
-	}
+//	 	if (getRootVertex() == null) {
+//	 		return;
+//	 	}
+//	 	HashMap<Vertex, Integer> deg = new HashMap<Vertex,Integer>();
+//	 	for (Vertex v: mVertexs) {
+//	 		deg.put(v, new Integer(v.getInEdges().size()));
+//	 	}
+//	 	int i =0;
+//	 	
+//		Queue<Vertex> queue = new ArrayDeque<Vertex>();
+//		queue.add(getRootVertex());
+//		
+//		
+//		Vertex v;
+//		Vertex u; //adj vertex of v
+//		while(!queue.isEmpty()) {
+//			v = queue.remove();
+//			v.setId(i);
+//			for (Edge edge: v.getOutEdges()) {
+//				u = edge.getToVertex();
+//				deg.put(u, deg.get(u)-1);
+//				if (deg.get(u) == 0) {
+//					queue.add(u);
+//				}
+//			}
+//			++i;
+//		}
+	 explored = new HashMap<Vertex,String>();
+	 Stack<Vertex> stack = new Stack<Vertex>();
+	 stack.add(mRootVerTex);
+	 
+	 for (Vertex v: getVertexs()) {
+		 v.calculateInVertexsNumber();
+		 explored.put(v, UNVISITED);
+	 }
+	 
+	 count = 0;
+	 Vertex v;
+	 
+	 while(!stack.isEmpty()) {
+		 v = stack.pop();
+		 v.setId(count);
+		 ++count;
+		 explored.put(v,VISITED);
+		  
+		 for (Vertex neighbor: v.getNeighbors()) {
+			neighbor.decreaseInVertexsNumber();
+		  	if (neighbor.getInVertexsNumber() == 0 &&
+					 explored.get(neighbor).equals(UNVISITED)) {
+				 stack.add(neighbor);
+			 }
+				  
+		 }
+	 }
+	 
+}
+ 
  
  public String toPlf() {
 	 StringBuilder builder = new StringBuilder();

@@ -7,11 +7,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import Logger.Log;
+
 /*
  * Use to read file
  * 
  */
 public class FileReader {
+	
+	private final static String TAG = "FileReader";
 	/*
 	 * Callback when read one line
 	 */
@@ -53,7 +57,8 @@ public class FileReader {
 		        	
 		        	++i;
 		        	if (mCallback != null) {
-		        		System.out.println("Readline:"+line);
+		        		Log.toConsole(TAG, "readline: " + line);
+		        		System.out.println("read line: "+line);
 		        		mCallback.execute(line);
 		        	}
 		            

@@ -74,7 +74,9 @@ public class RuleContainer {
 			String[] sentenceArr;
 			String[] posArr;
 			int i =1;
+			
 			while ((line = in.readLine()) != null) {
+				System.out.println("read line:"+line);
 			    sentenceArr = line.split("/");
 			    container.addRule(
 			    		sentenceArr[0],

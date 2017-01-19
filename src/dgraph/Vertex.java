@@ -8,12 +8,25 @@ public class Vertex implements Comparable<Vertex>{
 	private List<Edge> mInEdges;
 	private List<Edge> mOutEdges;
 	
+	private int mInVertexsNumber;
+	
 	public Vertex() {
 		Graph.i++;
 		this.mInEdges = new ArrayList<Edge>();
 		this.mOutEdges = new ArrayList<Edge>();
 	}
 	
+	public int getInVertexsNumber() {
+		return mInVertexsNumber;
+	}
+	
+	public void decreaseInVertexsNumber() {
+		--mInVertexsNumber;
+	}
+	
+	public void calculateInVertexsNumber() {
+		mInVertexsNumber = getInEdges().size();
+	}
 	
 	public List<Edge> getInEdges() {
 		return mInEdges;
@@ -21,6 +34,16 @@ public class Vertex implements Comparable<Vertex>{
 	
 	public List<Edge> getOutEdges() {
 		return mOutEdges;
+	}
+	
+	public List<Vertex> getNeighbors() {
+		List<Vertex> neighbors = new ArrayList<Vertex>();
+		
+		for (Edge out: getOutEdges()) {
+			neighbors.add(out.getToVertex());
+		}
+		
+		return neighbors;
 	}
 	
 	public int getId() {
