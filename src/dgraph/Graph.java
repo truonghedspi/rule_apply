@@ -37,7 +37,7 @@ public class Graph{
   /**use for topology numbering node*/ 
   private int count = 0;
   
-   
+  private List<Vertex> mTopologyOrder ; 
   
   public static int i = 0;
 
@@ -155,7 +155,10 @@ public class Graph{
 	  
 	  for(String wordWithPosStr: wordArr) {
 		  String[] wordPosArr = wordWithPosStr.split(TAG_WORD_DEVIDE_SYMBOL);
-		  addEdgeToEndVertex(wordPosArr[0], wordPosArr[1], true);
+		  System.out.println("word_Pos:"+wordWithPosStr);
+		  System.out.println("b:"+wordPosArr[0]);
+		  System.out.println("a:"+wordPosArr[1]);
+		  addEdgeToEndVertex(wordPosArr[0], wordPosArr[wordPosArr.length-1], true);
 	  }
   }
   
@@ -334,9 +337,7 @@ public class Graph{
  }
  
  public void postProcess() {
-	 if (getVertexs().size() == 2) {
-		 return;
-	 }
+	 
 	 calculateEdgesWeight();
 	 numberingVertex();
  }
@@ -385,6 +386,7 @@ public class Graph{
 //			++i;
 //		}
 	 explored = new HashMap<Vertex,String>();
+	 mTopologyOrder = new ArrayList<Vertex>();
 	 Stack<Vertex> stack = new Stack<Vertex>();
 	 stack.add(mRootVerTex);
 	 
@@ -400,6 +402,7 @@ public class Graph{
 		 v = stack.pop();
 		 v.setId(count);
 		 ++count;
+		 mTopologyOrder.add(v);
 		 explored.put(v,VISITED);
 		  
 		 for (Vertex neighbor: v.getNeighbors()) {
@@ -415,32 +418,32 @@ public class Graph{
 }
  
  
- public String toPlf() {
-	 StringBuilder builder = new StringBuilder();
-	 Vertex cur;
-	 Queue<Vertex> queue = new ArrayDeque<Vertex>();
-	 queue.add(getRootVertex());
-	 builder.append("(");
-	 while (!queue.isEmpty()) {
-		 cur = queue.remove();
-		 builder.append(toPlfByVertex(cur));
-		 
-		 List<Vertex> adjacentVertexs = new ArrayList<Vertex>();
-		 
-		 for (Edge edge: cur.getOutEdges()) {
-			 if (queue.contains(edge.getToVertex()) == false) {
-				 adjacentVertexs.add(edge.getToVertex());
-			 }
-				 
-		 }
-		 Collections.sort(adjacentVertexs);
-		 for (int i = 0; i < adjacentVertexs.size(); ++i) {
-			 queue.add(adjacentVertexs.get(i));
-		 }
-	 }
-	 builder.append(")");
-	 return builder.toString();
- }
+// public String toPlf() {
+//	 StringBuilder builder = new StringBuilder();
+//	 Vertex cur;
+//	 Queue<Vertex> queue = new ArrayDeque<Vertex>();
+//	 queue.add(getRootVertex());
+//	 builder.append("(");
+//	 while (!queue.isEmpty()) {
+//		 cur = queue.remove();
+//		 builder.append(toPlfByVertex(cur));
+//		 
+//		 List<Vertex> adjacentVertexs = new ArrayList<Vertex>();
+//		 
+//		 for (Edge edge: cur.getOutEdges()) {
+//			 if (queue.contains(edge.getToVertex()) == false) {
+//				 adjacentVertexs.add(edge.getToVertex());
+//			 }
+//				 
+//		 }
+//		 Collections.sort(adjacentVertexs);
+//		 for (int i = 0; i < adjacentVertexs.size(); ++i) {
+//			 queue.add(adjacentVertexs.get(i));
+//		 }
+//	 }
+//	 builder.append(")");
+//	 return builder.toString();
+// }
  
  private String toPlfByVertex(Vertex v) {
 	 StringBuilder builder = new StringBuilder();
@@ -465,6 +468,28 @@ public class Graph{
  
  public int getLength() {
 	 return mVertexs.size();
+ }
+ 
+ public String toPlf() {
+	 StringBuilder builder = new StringBuilder();
+	 builder.append("(");
+	 Vertex v;
+	 int dif;
+	 for (int i= 0; i < mTopologyOrder.size()-1; ++i) {
+		 v = mTopologyOrder.get(i);
+		 builder.append("(");
+		 
+		 for (Edge out: v.getOutEdges()) {
+			 dif = out.getToVertex().getId()-out.getFromVertex().getId();
+			 builder.append("('"+out.getWord()+"', "+ out.getWeight()+", " + dif+"),");
+		 }
+		 
+		 builder.append("),");
+		 
+	 }
+	 
+	 builder.append(")");
+	 return builder.toString();
  }
 
 }

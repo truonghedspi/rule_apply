@@ -18,8 +18,8 @@ public class RuleApply implements FileReader.Listener{
 	
 	public final static int MAX_WORDS = 10;
 	
-	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.plf";
-	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.ja";
+	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.vi.plf";
+	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.vi";
 	
 	// contain all rule 
 	private RuleContainer mContainer;
@@ -52,7 +52,7 @@ public class RuleApply implements FileReader.Listener{
 	public void writeResultToFile() {
 		StringBuilder builder = new StringBuilder(); 
 		for (Graph graph: graphs) {
-			//System.out.println(graph.toPlf());
+			System.out.println(graph.toPlf());
 			builder.append(graph.toPlf());
 			builder.append("\n");
 		}
@@ -80,6 +80,8 @@ public class RuleApply implements FileReader.Listener{
 			applyRule(graph);
 		}
 		
+		graph.postProcess();
+		
 	}
 	
 	public List<Graph> getListGraph() {
@@ -91,10 +93,11 @@ public class RuleApply implements FileReader.Listener{
 	 * @param g graph that apply rule on this
 	 */
 	private void applyRule(final Graph g) {
+				
 				for (Rule rule: RuleApply.this.mContainer.getRuleList()) {
 					g.applyRule(rule);
 				}
-				g.postProcess();
+				//g.postProcess();
 	}
 	
 	//listener for each time read a line from corpus
