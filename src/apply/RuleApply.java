@@ -18,8 +18,8 @@ public class RuleApply implements FileReader.Listener{
 	
 	public final static int MAX_WORDS = 10;
 	
-	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.vi.plf";
-	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.vi";
+	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.ja.plf";
+	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.ja";
 	
 	// contain all rule 
 	private RuleContainer mContainer;

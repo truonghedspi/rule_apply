@@ -1,11 +1,12 @@
 package main;
 
+import constant.Constant;
 import reader.FileReader;
 import writer.FileWriter;
 
 public class PosTagging {
-	static String inputFile = "/home/truong/gr/training/test/corpus/test.mecab.vi";
-	static String outputFile = "/home/truong/gr/training/test/corpus/test.tagged.vi";
+	static String inputFile = "/home/truong/gr/training/test/corpus/test.mecab.ja";
+	static String outputFile = "/home/truong/gr/training/test/corpus/test.tagged.ja";
 	
 	public static void main(String[] args) {
 		FileReader reader = new FileReader();
@@ -52,7 +53,7 @@ public class PosTagging {
 			lineArr = line.split("[\t ]");
 			tag = lineArr[1].split(",");
 			builder.append(lineArr[0]);
-			builder.append("@");
+			builder.append(Constant.TAG_WORD_DEVIDE_SYMBOL);
 			builder.append(tag[0]);
 			builder.append(" ");
 		}

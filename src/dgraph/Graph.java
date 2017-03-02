@@ -17,6 +17,7 @@ import Logger.Log;
 
 import com.mxgraph.shape.mxCloudShape;
 
+import constant.Constant;
 import rule.Rule;
 
 
@@ -32,7 +33,7 @@ public class Graph{
   /** Color used to mark nodes after descendants are completely visited */
   public static final String UNVISITED = "unvisited";
   
-  public static final String TAG_WORD_DEVIDE_SYMBOL ="/";
+  public static final String TAG_WORD_DEVIDE_SYMBOL =Constant.TAG_WORD_DEVIDE_SYMBOL;
   
   /**use for topology numbering node*/ 
   private int count = 0;
@@ -287,6 +288,47 @@ public class Graph{
  
   
   
+// private void addNewArc( Vertex lower, Vertex upper,
+//		 String[] words, String[] poss) {
+//		 if (words.length != poss.length)
+//			 throw new IllegalArgumentException("word array and pos array not same length!");
+//		 Vertex tmp = lower;
+//		 boolean flag = false;
+//		 
+//		 for (int i = 0; i < words.length-1; ++i) {
+//			 
+//			 for (Edge edge: tmp.getOutEdges()) {
+//				 if (edge.getWord().equals(words[i])) {
+//					 tmp = edge.getToVertex();
+//					 flag = true;
+//					 edge.increaseCount();
+//					 break;
+//				 }
+//			 }
+//			 
+//			 // neu da co tu do trong lattice
+//			 if (flag == true) {
+//				 flag = false;
+//				 continue;
+//			 } 
+//			 
+//			 //neu khong tao them 1 dinh
+//			 Vertex newVertex = new Vertex();
+//			 
+//			 addVertex(newVertex);
+//			 
+//			 //them canh moi
+//			 Edge newEdge = new Edge(poss[i],words[i], false);
+//			 addEdge(newEdge, tmp, newVertex);
+//			 tmp = newVertex;
+//		 } 
+//		 Edge edge = new Edge(poss[poss.length-1],words[words.length-1],false);
+//		 addEdge(edge,tmp,upper);
+//		 Log.toConsole(TAG, "edge:"+edge.getToVertex().getId());
+//		 Log.toConsole(TAG, "edge:"+edge.getFromVertex().getId());
+//	 }
+ 
+ 
  private void addNewArc( Vertex lower, Vertex upper,
 		 String[] words, String[] poss) {
 		 if (words.length != poss.length)
@@ -296,24 +338,27 @@ public class Graph{
 		 
 		 for (int i = 0; i < words.length-1; ++i) {
 			 
-			 for (Edge edge: tmp.getOutEdges()) {
-				 if (edge.getWord().equals(words[i])) {
-					 tmp = edge.getToVertex();
-					 flag = true;
-					 break;
-					 
-				 }
-			 }
+//			 for (Edge edge: tmp.getOutEdges()) {
+//				 if (edge.getWord().equals(words[i])) {
+//					 tmp = edge.getToVertex();
+//					 flag = true;
+//					 edge.increaseCount();
+//					 break;
+//				 }
+//			 }
+//			 
+//			 // neu da co tu do trong lattice
+//			 if (flag == true) {
+//				 flag = false;
+//				 continue;
+//			 } 
 			 
-			 if (flag == true) {
-				 flag = false;
-				 continue;
-			 } 
-			 
+			 //neu khong tao them 1 dinh
 			 Vertex newVertex = new Vertex();
 			 
 			 addVertex(newVertex);
 			 
+			 //them canh moi
 			 Edge newEdge = new Edge(poss[i],words[i], false);
 			 addEdge(newEdge, tmp, newVertex);
 			 tmp = newVertex;
@@ -322,6 +367,7 @@ public class Graph{
 		 addEdge(edge,tmp,upper);
 		 Log.toConsole(TAG, "edge:"+edge.getToVertex().getId());
 		 Log.toConsole(TAG, "edge:"+edge.getFromVertex().getId());
+		 
 	 }
  
  private boolean isWordSequenceExsisted(Vertex lower, Vertex upper, String[] word) {
@@ -344,17 +390,32 @@ public class Graph{
  
  
  private void calculateEdgesWeight() {
+//	 for (Vertex v:  mVertexs) {
+//		if (v.getOutEdges().size() == 0) continue;
+//		
+//		int numberOfEdge = v.getOutEdges().size();
+//		float weight = Math.round(100.0/numberOfEdge);
+//		for (Edge edge: v.getOutEdges()) {
+//			edge.setWeight(weight/100f);
+//		}
+//		
+//		v.getOutEdges().get(0).setWeight((100-weight*(numberOfEdge-1))/100f);
+//	 }
+	 
 	 for (Vertex v:  mVertexs) {
-		if (v.getOutEdges().size() == 0) continue;
-		
-		int numberOfEdge = v.getOutEdges().size();
-		float weight = Math.round(100.0/numberOfEdge);
-		for (Edge edge: v.getOutEdges()) {
-			edge.setWeight(weight/100f);
-		}
-		
-		v.getOutEdges().get(0).setWeight((100-weight*(numberOfEdge-1))/100f);
-	 }
+		 	if (v.getOutEdges().size() == 0) continue;
+			int totalCount = 0;
+			for (Edge edge: v.getOutEdges()) {
+				totalCount += edge.getCount();
+			}
+			//int numberOfEdge = v.getOutEdges().size();
+			float weight = Math.round(100.0/totalCount);
+			for (Edge edge: v.getOutEdges()) {
+				edge.setWeight(edge.getCount()*1.0f/totalCount);
+			}
+			
+			//v.getOutEdges().get(0).setWeight((100-weight*(numberOfEdge-1))/100f);
+		 }
  }
  
  private void numberingVertex() {

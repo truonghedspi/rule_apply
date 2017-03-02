@@ -20,10 +20,21 @@ public class Edge {
 	/**Edge in origin source sentence */
 	private boolean mIsMainPath;
 	
+	private int mCount;
+	
 	public Edge(String pos, String word, boolean mainPath ) {
 		this.mPos =pos;
 		this.mWord = word;
 		this.mIsMainPath = mainPath;
+		this.mCount = 1;
+	}
+	
+	public void increaseCount() {
+		++mCount;
+	}
+	
+	public int getCount() {
+		return mCount;
 	}
 	
 	// Getter

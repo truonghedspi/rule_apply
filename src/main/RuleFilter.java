@@ -14,8 +14,8 @@ import rule.RuleContainer;
 import writer.FileWriter;
 
 public class RuleFilter {
-	public static final int MAX_WORDS = 8;
-	public static final int MIN_COUNT = 1000;
+	public static final int MAX_WORDS = 15;
+	public static final int MIN_COUNT = 500;
 	
 	public static final int LOW = 2;
 	public static final int UP = 15;
@@ -23,7 +23,7 @@ public class RuleFilter {
 	public static void main(String[] args) {
 		RuleContainer container = readFile("/home/truong/res.txt");
 		//statistic(container);
-		FileWriter.write(container.toString(), "/home/truong/res_filter.txt");
+		FileWriter.write(container.toString(), "/home/truong/new_res_filter.txt");
 //		System.out.println(container.getRuleList().size());
 		
 		//statisticRuleByLengthAndCount(container);
