@@ -5,8 +5,8 @@ import reader.FileReader;
 import writer.FileWriter;
 
 public class PosTagging {
-	static String inputFile = "/home/truong/gr/training/test/corpus/test.mecab.ja";
-	static String outputFile = "/home/truong/gr/training/test/corpus/test.tagged.ja";
+	static String inputFile = "/home/truong/gr/training/test/corpus/train.mecab.ja";
+	static String outputFile = "/home/truong/gr/training/test/corpus/train.tagged.ja";
 	
 	public static void main(String[] args) {
 		FileReader reader = new FileReader();

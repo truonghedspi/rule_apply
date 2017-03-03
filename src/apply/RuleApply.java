@@ -18,7 +18,7 @@ public class RuleApply implements FileReader.Listener{
 	
 	public final static int MAX_WORDS = 10;
 	
-	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.ja.plf";
+	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.ordered.ja";
 	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.ja";
 	
 	// contain all rule 
@@ -50,10 +50,19 @@ public class RuleApply implements FileReader.Listener{
 
 	
 	public void writeResultToFile() {
+//		StringBuilder builder = new StringBuilder(); 
+//		for (Graph graph: graphs) {
+//			System.out.println(graph.toPlf());
+//			builder.append(graph.toPlf());
+//			builder.append("\n");
+//		}
+//		
+//		FileWriter.write(builder.toString(), outputFileName);
+		
 		StringBuilder builder = new StringBuilder(); 
 		for (Graph graph: graphs) {
-			System.out.println(graph.toPlf());
-			builder.append(graph.toPlf());
+			System.out.println(graph.getWeigetestSentence());
+			builder.append(graph.getWeigetestSentence());
 			builder.append("\n");
 		}
 		
