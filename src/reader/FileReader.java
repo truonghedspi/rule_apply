@@ -57,13 +57,17 @@ public class FileReader {
 		        	
 		        	++i;
 		        	if (mCallback != null) {
-		        		Log.toConsole(TAG, "readline: " + line);
-		        		System.out.println("read line: "+line);
+		        		System.out.println("read line: "+i);
 		        		mCallback.execute(line);
+		        		if (i == 5000000) {
+		        			System.gc();
+		        		}
+		        	} else {
+		        		builder.append(line);
+			            builder.append("\n");
 		        	}
 		            
-		            builder.append(line);
-		            builder.append("\n");
+		            
 		        }
 		        if (mCallback != null) {
 		        	mCallback.completedReadFile();

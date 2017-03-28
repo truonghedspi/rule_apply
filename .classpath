@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/jgrapht-ext-1.0.0-uber.jar"/>
 	<classpathentry kind="lib" path="lib/jgrapht-ext-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/jgraphx-2.0.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/truong/Downloads/lucene-gosen-4.6.0-naist-chasen.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

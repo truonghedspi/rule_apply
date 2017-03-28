@@ -18,8 +18,8 @@ public class RuleApply implements FileReader.Listener{
 	
 	public final static int MAX_WORDS = 10;
 	
-	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.ja.plf";
-	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.tagged.ja";
+	private final static String outputFileName = "/home/truong/gr/training/test/corpus/test.hira.plf";
+	private final static String intputFileName = "/home/truong/gr/training/test/corpus/test.hira.ja";
 	
 	// contain all rule 
 	private RuleContainer mContainer;
@@ -73,14 +73,16 @@ public class RuleApply implements FileReader.Listener{
 		Graph graph = new Graph();
 		graph.initGraph();
 		graph.createMonoTone(sentence);
+		graph.extendLattice();
+		graph.postProcess();
 		
 		graphs.add(graph);
-		
-		if (graph.getLength() <= MAX_WORDS) {
-			applyRule(graph);
-		}
-		
-		graph.postProcess();
+//		
+//		if (graph.getLength() <= MAX_WORDS) {
+//			applyRule(graph);
+//		}
+//		
+//		graph.postProcess();
 		
 	}
 	

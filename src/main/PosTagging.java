@@ -1,63 +1,71 @@
 package main;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
 import constant.Constant;
 import reader.FileReader;
 import writer.FileWriter;
 
-public class PosTagging {
-	static String inputFile = "/home/truong/gr/training/test/corpus/test.mecab.ja";
-	static String outputFile = "/home/truong/gr/training/test/corpus/test.tagged.ja";
-	
+public class PosTagging implements FileReader.Listener {
+	static String inputFile = "/home/truong/gr/phrase_improve/sub_16_ja_en/corpus/train.mecab.ja";
+	static String outputFile = "/home/truong/gr/phrase_improve/sub_16_ja_en/corpus/train.tok.ja";
+	static FileWriter writer = new FileWriter(outputFile);
+
 	public static void main(String[] args) {
-		FileReader reader = new FileReader();
+		PosTagging a = new PosTagging();
+		FileReader reader = new FileReader(a);
 		reader.read(inputFile);
-		String fileContent = reader.getContent();
-		FileWriter.write(tokenizer(fileContent), outputFile);
+		// String fileContent = reader.getContent();
+		// tokenizer(fileContent);
 	}
-	
-	public static String tagPos(String fileContent) {
+
+	public static void tagPos(String line) {
+		StringBuilder builder = new StringBuilder();
+
+		String[] lineArr;
+
+		if (line.equals("EOS")) {
+			builder.append("\n");
+			return;
+		}
+
+		lineArr = line.split("[\t ]");
+		tag = lineArr[1].split(",");
+		builder.append(lineArr[0]);
+		builder.append("_");
+
+		builder.append(" ");
+
+	}
+
+	public static void tokenizer(String line) {
 		StringBuilder builder = new StringBuilder();
 		
-		String[] fileContentArr = fileContent.split("\n");
 		String[] lineArr;
 		String[] tag;
-		for (String line: fileContentArr) {
-			if (line.equals("EOS")) {
-				builder.append("\n");
-				continue;
-			}
-			
-			lineArr = line.split("[\t ]");
-			tag = lineArr[1].split(",");
-			builder.append(lineArr[0]);
-			builder.append("_");
-			builder.append(tag[0]);
-			builder.append(" ");
+		
+		
+		
+		if (line.equals("EOS")) {
+			builder.append("\n");
+		    Files.write(Paths.get(outputFile), "\n".getBytes(), StandardOpenOption.APPEND);
+			return ;
 		}
 		
-		return builder.toString();
-	}
+		lineArr = line.split("[\t]");
+		Files.write(Paths.get(outputFile), (lineArr[0]+" ").getBytes(), StandardOpenOption.APPEND);
 	
-	public static String tokenizer(String fileContent) {
-		StringBuilder builder = new StringBuilder();
-		
-		String[] fileContentArr = fileContent.split("\n");
-		String[] lineArr;
-		String[] tag;
-		for (String line: fileContentArr) {
-			if (line.equals("EOS")) {
-				builder.append("\n");
-				continue;
-			}
-			
-			lineArr = line.split("[\t ]");
-			tag = lineArr[1].split(",");
-			builder.append(lineArr[0]);
-			builder.append(Constant.TAG_WORD_DEVIDE_SYMBOL);
-			builder.append(tag[0]);
-			builder.append(" ");
-		}
-		
-		return builder.toString();
+	}
+
+	public void execute(String line) {
+		// TODO Auto-generated method stub
+		tokenizer(line);
+	}
+
+	public void completedReadFile() {
+		// TODO Auto-generated method stub
+
 	}
 }
